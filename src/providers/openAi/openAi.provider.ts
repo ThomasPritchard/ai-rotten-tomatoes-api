@@ -1,8 +1,8 @@
-import { provide } from "inversify-binding-decorators";
+import { provideSingleton } from "@expressots/core";
 import OpenAI from "openai";
 import ENV from "../../env";
 
-@provide(OpenAiProvider)
+@provideSingleton(OpenAiProvider)
 class OpenAiProvider {
     private openAi: OpenAI;
 

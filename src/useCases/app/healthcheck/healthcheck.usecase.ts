@@ -1,8 +1,8 @@
-import { provide } from "inversify-binding-decorators";
-import { OpenAiProvider } from "../../../providers/openAi/openAi.provider";
+import { OpenAiProvider } from "@providers/openAi/openAi.provider";
+import { provideSingleton } from "@expressots/core";
 
-@provide(OpenAiUseCase)
-class OpenAiUseCase {
+@provideSingleton(HealthcheckUseCase)
+class HealthcheckUseCase {
     constructor(private openAiProvider: OpenAiProvider) {}
 
     async execute() {
@@ -13,4 +13,4 @@ class OpenAiUseCase {
     }
 }
 
-export { OpenAiUseCase };
+export { HealthcheckUseCase };

@@ -1,6 +1,6 @@
-import { provide } from "inversify-binding-decorators";
+import { provideSingleton } from "@expressots/core";
 
-@provide(AppUseCase)
+@provideSingleton(AppUseCase)
 class AppUseCase {
     execute() {
         return "Hello, world";
