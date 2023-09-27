@@ -1,8 +1,8 @@
 import "reflect-metadata";
-import { HealthcheckUseCase } from "../../src/useCases/app/healthcheck/healthcheck.usecase";
-import { OpenAiProvider } from "../../src/providers/openAi/openAi.provider";
+import { HealthcheckUseCase } from "../../../../src/useCases/app/healthcheck/healthcheck.usecase";
+import { OpenAiProvider } from "../../../../src/providers/openAi/openAi.provider";
 
-jest.mock("../../src/providers/openAi/openAi.provider");
+jest.mock("../../../../src/providers/openAi/openAi.provider");
 
 describe("healthcheck", () => {
     let openAiProviderMock: OpenAiProvider;
