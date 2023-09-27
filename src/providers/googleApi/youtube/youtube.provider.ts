@@ -5,23 +5,25 @@ import { ErrorType } from "errors/enums";
 import { GaxiosError } from "gaxios";
 import { google, youtube_v3 } from "googleapis";
 import { Parts, YoutubeOptions } from "./enums";
+import { IVideoData } from "./interfaces";
+import { VideoData } from "./VideoData";
 
-@provideSingleton(GoogleApiProvider)
-class GoogleApiProvider {
-    private youtubeApi: youtube_v3.Youtube;
+@provideSingleton(YoutubeProvider)
+class YoutubeProvider {
+    private youtube: youtube_v3.Youtube;
 
     constructor() {
-        this.youtubeApi = google.youtube({
+        this.youtube = google.youtube({
             version: YoutubeOptions.VERSION,
             auth: ENV.Google.API_KEY,
         });
     }
 
-    public async fetchVideoData(id: string): Promise<youtube_v3.Schema$Video> {
+    public async fetchVideoData(id: string): Promise<IVideoData> {
         let result: youtube_v3.Schema$VideoListResponse;
 
         try {
-            const videoListResponsePromise = await this.youtubeApi.videos.list({
+            const videoListResponsePromise = await this.youtube.videos.list({
                 part: [
                     Parts.STATISTICS,
                     Parts.CONTENT_DETAILS,
@@ -33,7 +35,19 @@ class GoogleApiProvider {
             });
 
             result = videoListResponsePromise.data;
+
+            if (result.pageInfo?.totalResults === 0 || !result.items) {
+                throw new ApiError(
+                    StatusCode.BadRequest,
+                    "The requested video does not exist",
+                    ErrorType.NoVideoResultsError,
+                );
+            }
         } catch (error) {
+            if (error instanceof ApiError) {
+                throw error;
+            }
+
             let apiError;
             if (error instanceof GaxiosError) {
                 apiError = new ApiError(
@@ -51,8 +65,9 @@ class GoogleApiProvider {
             );
             throw apiError;
         }
-        return result;
+
+        return new VideoData(result.items[0]);
     }
 }
 
-export { GoogleApiProvider };
+export { YoutubeProvider };

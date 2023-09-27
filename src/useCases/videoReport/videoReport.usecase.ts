@@ -1,14 +1,14 @@
 import { provideSingleton, StatusCode } from "@expressots/core";
-import { GoogleApiProvider } from "@providers/googleApi/googleApi.provider";
+import { IVideoData } from "@providers/googleApi/youtube/interfaces";
+import { YoutubeProvider } from "@providers/googleApi/youtube/youtube.provider";
 import { ApiError } from "errors/ApiError";
 import { ErrorType } from "errors/enums";
-import { youtube_v3 } from "googleapis";
 
 @provideSingleton(VideoReportUseCase)
 class VideoReportUseCase {
-    constructor(private googleApiProvider: GoogleApiProvider) {}
+    constructor(private youtubeProvider: YoutubeProvider) {}
 
-    async execute(id: string): Promise<youtube_v3.Schema$Video> {
+    async execute(id: string): Promise<IVideoData> {
         if (!id) {
             const apiError = new ApiError(
                 StatusCode.BadRequest,
@@ -17,7 +17,7 @@ class VideoReportUseCase {
             );
             throw apiError;
         }
-        const result = await this.googleApiProvider.fetchVideoData(id);
+        const result = await this.youtubeProvider.fetchVideoData(id);
 
         return result;
     }
