@@ -1,3 +1,4 @@
+import { Domain, ErrorType } from "./enums";
 import { IError } from "./interfaces";
 
 export class ApiError extends Error {
@@ -8,13 +9,13 @@ export class ApiError extends Error {
 
     constructor(code: number, message: string, reason: string) {
         super(message);
-        this.name = "ApiError";
+        this.name = ErrorType.ApiError;
         this.code = code;
         this.reason = reason;
 
         const errors = [
             {
-                domain: "default",
+                domain: Domain.Default,
                 reason,
                 message,
             },
